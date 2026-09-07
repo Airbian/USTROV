@@ -1,0 +1,39 @@
+/**:
+  ros__parameters:
+    # ustrov_control 的 ActuatorControls 输出，数值必须已经归一化到 [-1, 1]。
+    thruster_command_topic: thruster_command
+
+    # 无 PX4 命名空间时为 /fmu；若 PX4 以 -n uuv00 启动，则改为 /uuv00/fmu。
+    px4_topic_prefix: /fmu
+
+    # 留空时按上面的前缀生成标准话题。仅在固件/消息转换器确实使用版本后缀时
+    # 覆盖，例如 /fmu/out/vehicle_status_v1。
+    vehicle_status_topic: '/fmu/out/vehicle_status_v1'
+    vehicle_command_ack_topic: ''
+
+    output_rate_hz: 50.0
+    command_timeout_ms: 300
+    # 延续 PanorAUV：OffboardControlMode 与 ActuatorMotors 均以 50 Hz 发布。
+    # VehicleStatus 仅保存 PX4 最近一次状态，不作为 DDS 心跳，因此不设置
+    # VehicleStatus 超时；高频 thruster_command 仍由独立的 300 ms 看门狗保护。
+    prestream_duration_ms: 1200
+    request_retry_ms: 1000
+    arm_sequence_timeout_ms: 10000
+
+    # 没有新鲜的混控输出时拒绝解锁；运行中超时则请求 PX4 上锁。
+    require_fresh_command_to_arm: true
+    auto_disarm_on_command_timeout: true
+
+    # PX4 Motor1..Motor8 分别读取 ActuatorControls.control[] 中的哪个下标。
+    motor_input_indices: [0, 1, 2, 3, 4, 5, 6, 7]
+
+    # 沿用 PanorAUV 的方向配置。首次实机测试必须拆桨逐路核对。
+    motor_signs: [1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0]
+
+    # 低 8 位表示 Motor1..Motor8 均允许双向推力。
+    reversible_flags: 255
+
+    target_system: 1
+    target_component: 1
+    source_system: 1
+    source_component: 1

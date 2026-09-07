@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:macro name="acoustic_modem_macro" params="prefix parent xyz rpy">
+        <xacro:include filename="$(find ustrov_sim)/models/common/urdf/common.xacro" />
+        <xacro:property name="link" value="${prefix}_link" />
+        <xacro:property name="joint" value="${prefix}_joint" />
+
+        <link name="${link}">
+            <xacro:zero_inertia />
+            <visual>
+                <origin rpy="0 0 0" />
+                <geometry>
+                    <cylinder radius="0.02" length="0.01" />
+                </geometry>
+            </visual>
+        </link>
+
+        <joint name="${joint}" type="fixed">
+            <origin xyz="${xyz}" rpy="${rpy}" />
+            <parent link="${parent}" />
+            <child link="${link}" />
+        </joint>
+        <gazebo reference="${joint}">
+            <disableFixedJointLumping>true</disableFixedJointLumping>
+            <preserveFixedJoint>true</preserveFixedJoint>
+        </gazebo>
+
+        <gazebo reference="${link}">
+            <visual>
+                <material>
+                    <ambient>0.5 0.25 1 1</ambient>
+                    <diffuse>1 0.5 1 1</diffuse>
+                    <specular>1 1 1 1</specular>
+                </material>
+            </visual>
+        </gazebo>
+
+        <gazebo>
+            <xacro:if value="$(arg use_acoustic_modem)">
+                <plugin filename="odometry" name="ustrov_gz_plugins::odometry">
+                    <link>${link}</link>
+                    <update_rate>300.0</update_rate>  <!-- higher rate than acoustics simulation necessary -->
+                    <base_topic>ground_truth/modem/odometry</base_topic>
+                </plugin>
+            </xacro:if>
+        </gazebo>
+
+
+    </xacro:macro>
+</robot>

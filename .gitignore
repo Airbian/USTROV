@@ -1,0 +1,28 @@
+# ROS 2 / colcon 生成目录
+build/
+install/
+log/
+
+# 编辑器与本地配置
+.vscode/
+.idea/
+*.swp
+*.user
+.env
+
+# Python 缓存
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+
+# ROS bag 和运行日志
+rosbag2_*/
+*.db3
+*.mcap
+*.bag
+*.log
+
+# 操作系统文件
+.DS_Store
+Thumbs.db

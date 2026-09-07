@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:macro name="camera_macro" params="prefix parent topic_prefix ignition_frame_id xyz rpy">
+        <xacro:include filename="$(find ustrov_sim)/models/common/urdf/common.xacro" />
+        <xacro:include filename="$(find ustrov_sim)/models/camera/urdf/camera_params.xacro" />
+        <xacro:property name="link" value="${prefix}_link" />
+        <xacro:property name="joint" value="${prefix}_joint" />
+
+        <link name="${link}">
+            <xacro:zero_inertia />
+            <visual>
+                <origin rpy="0 ${radians(90)} 0" />
+                <geometry>
+                    <cylinder radius="0.02" length="0.01" />
+                </geometry>
+            </visual>
+        </link>
+
+        <joint name="${joint}" type="fixed">
+            <origin xyz="${xyz}" rpy="${rpy}" />
+            <parent link="${parent}" />
+            <child link="${link}" />
+        </joint>
+        <gazebo reference="${joint}">
+            <disableFixedJointLumping>true</disableFixedJointLumping>
+            <preserveFixedJoint>true</preserveFixedJoint>
+        </gazebo>
+
+        <gazebo reference="${link}">
+            <visual>
+                <material>
+                    <ambient>0.5 0.25 1 1</ambient>
+                    <diffuse>1 0.5 1 1</diffuse>
+                    <specular>1 1 1 1</specular>
+                </material>
+            </visual>
+            <sensor name="${prefix}" type="camera">
+                <camera>
+                    <noise>
+                        <type>gaussian</type>
+                        <mean>0</mean>
+                        <stddev>0.1</stddev>
+                    </noise>
+                    <camera_info_topic>${topic_prefix}/camera_info</camera_info_topic>
+                    <horizontal_fov>${horizontal_fov}</horizontal_fov>
+                    <image>
+                        <width>${width}</width>
+                        <height>${height}</height>
+                    </image>
+                    <clip>
+                        <near>0.05</near>
+                        <far>10</far>
+                    </clip>
+                    <lens>
+                        <intrinsics>
+                            <fx>${width/2.0/tan(horizontal_fov/2.0)}</fx>
+                            <fy>${width/2.0/tan(horizontal_fov/2.0)}</fy>
+                            <cx>${width/2.0}</cx>
+                            <cy>${height/2.0}</cy>
+                            <s>0</s>
+                        </intrinsics>
+                        <projection>
+                            <p_fx>${width/2.0/tan(horizontal_fov/2.0)}</p_fx>
+                            <p_fy>${width/2.0/tan(horizontal_fov/2.0)}</p_fy>
+                            <p_cx>${width/2.0}</p_cx>
+                            <p_cy>${height/2.0}</p_cy>
+                        </projection>
+                    </lens>
+                </camera>
+                <always_on>1</always_on>
+                <update_rate>${fps}</update_rate>
+                <visualize>true</visualize>
+                <topic>${topic_prefix}/image_rect</topic>
+                <gz_frame_id>${ignition_frame_id}</gz_frame_id>
+            </sensor>
+        </gazebo>
+
+    </xacro:macro>
+</robot>

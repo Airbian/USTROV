@@ -1,0 +1,22 @@
+/**:
+  ros__parameters:
+    # PX4 uXRCE-DDS 输出前缀。
+    px4_topic_prefix: /fmu
+
+    # 留空时由 px4_topic_prefix 自动组成 /out/... 话题。
+    sensor_combined_topic: ""
+    sensor_baro_topic: ""
+
+    # 对接 ustrov_state_estimation 的标准 ROS 2 传感器接口。
+    imu_topic: /uuv00/imu
+    pressure_topic: /uuv00/pressure
+    temperature_topic: /uuv00/barometer_temperature
+    imu_frame_id: base_link
+    pressure_frame_id: base_link
+
+    # SensorCombined/SensorBaro 不携带协方差，先使用保守标准差。
+    # 完成静态采样统计后，应使用实测标准差替换这些值。
+    angular_velocity_stddev: 0.02
+    linear_acceleration_stddev: 0.20
+    pressure_stddev_pa: 100.0
+    temperature_stddev_c: 1.0

@@ -189,9 +189,9 @@ DISARMING ── 发布 NaN，重复发送 Disarm，确认后回到 IDLE
 
 ```bash
 source /opt/ros/jazzy/setup.bash
-source ~/ros2_underlay/install/setup.bash
+source ~/USTROV/ustrov_underlay/install/setup.bash
 
-cd ~/ustrov_ws
+cd ~/USTROV/ustrov_ws
 colcon build --symlink-install --packages-select ustrov_core
 source install/setup.bash
 ```

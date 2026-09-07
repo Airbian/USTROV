@@ -32,9 +32,9 @@ ls -l /dev/ttyPX4
 然后在容器中运行：
 
 ```bash
-cd ~/ustrov_ws
+cd ~/USTROV/ustrov_ws
 source /opt/ros/jazzy/setup.bash
-source ~/ros2_underlay/install/setup.bash
+source ~/USTROV/ustrov_underlay/install/setup.bash
 source install/setup.bash
 
 ros2 launch ustrov_bringup core.launch.py

@@ -130,7 +130,7 @@ def main():
                 'Failed to automagically source the enviroment. '
                 'If it is the first time building the workspace, specify the '
                 'underlay workspaces manually, e.g.:\n'
-                'build-ros --underlay ~/ros2_underlay'
+                'build-ros --underlay ~/USTROV/ustrov_underlay'
             )
             exit(1)
     else:

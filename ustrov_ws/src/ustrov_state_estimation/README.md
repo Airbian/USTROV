@@ -37,7 +37,7 @@ ros2 launch ustrov_sim top_hippocampus_complete.launch.py \
 运行单元测试：
 
 ```bash
-cd ~/ustrov_ws
+cd ~/USTROV/ustrov_ws
 colcon build --packages-select ustrov_state_estimation --symlink-install
 colcon test --packages-select ustrov_state_estimation
 colcon test-result --verbose

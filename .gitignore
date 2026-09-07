@@ -3,6 +3,10 @@ build/
 install/
 log/
 
+# underlay 依赖暂不纳入本仓库，只保留说明文件
+ustrov_underlay/src/*
+!ustrov_underlay/src/README.md
+
 # 编辑器与本地配置
 .vscode/
 .idea/

@@ -9,10 +9,21 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include <stdexcept>
 
 using std::placeholders::_1;
 
 Estimator::Estimator() : Node("estimator_node") {
+  params_.water_density = declare_parameter<double>("water_density", 1000.0);
+  params_.surface_calibration_samples =
+      declare_parameter<int64_t>("surface_calibration_samples", 30);
+  if (!std::isfinite(params_.water_density) || params_.water_density <= 0.0) {
+    throw std::invalid_argument("water_density must be finite and greater than zero");
+  }
+  if (params_.surface_calibration_samples <= 0) {
+    throw std::invalid_argument("surface_calibration_samples must be greater than zero");
+  }
+
   imu_time_last_us = (uint64_t)now().nanoseconds() / 1000;
   InitPublisher();
   imu_sub_ = create_subscription<sensor_msgs::msg::Imu>(
@@ -25,6 +36,12 @@ Estimator::Estimator() : Node("estimator_node") {
   imu_watchdog_ =
       rclcpp::create_timer(this, get_clock(), std::chrono::milliseconds(100),
                            std::bind(&Estimator::OnImuWatchdog, this));
+
+  RCLCPP_INFO(get_logger(),
+              "Keep the vehicle stationary at the water surface: collecting "
+              "%ld pressure samples for zero calibration (water density %.1f "
+              "kg/m^3).",
+              params_.surface_calibration_samples, params_.water_density);
 }
 
 void Estimator::InitPublisher() {
@@ -88,16 +105,39 @@ void Estimator::OnImu(const sensor_msgs::msg::Imu::SharedPtr msg) {
 }
 
 void Estimator::OnBaro(const sensor_msgs::msg::FluidPressure::SharedPtr msg) {
-  baro_updated_ = true;
-  // TODO: apply transformation from baro frame to body frame
-  double pressure_at_bodyframe = msg->fluid_pressure;
+  const double pressure_pa = msg->fluid_pressure;
+  if (!std::isfinite(pressure_pa)) {
+    RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 2000,
+                         "Ignoring non-finite pressure sample.");
+    return;
+  }
 
+  // 启动时让机器人保持在水面静止，取多帧平均值作为深度零点。
+  // 标定期间不向 EKF 发送压力数据，避免把尚未确定零点的数据用于初始化。
+  if (!surface_pressure_calibrated_) {
+    surface_pressure_sum_ += pressure_pa;
+    ++surface_pressure_sample_count_;
+    if (surface_pressure_sample_count_ < params_.surface_calibration_samples) {
+      return;
+    }
+
+    pressure_at_surface_ =
+        surface_pressure_sum_ /
+        static_cast<double>(surface_pressure_sample_count_);
+    surface_pressure_calibrated_ = true;
+    RCLCPP_INFO(get_logger(),
+                "Pressure zero calibration complete: surface pressure %.3f Pa "
+                "from %ld samples.",
+                pressure_at_surface_, surface_pressure_sample_count_);
+  }
+
+  // ROS ENU/FLU 的 Z 轴向上，因此下潜时压力增大，估计的 Z 为负。
   baro_sample_.height =
-      -(pressure_at_bodyframe - params_.baro_atmo_pressure) * 1.0e-4 +
-      params_.baro_sealevel_offset;
+      -(pressure_pa - pressure_at_surface_) /
+      (params_.water_density * kGravity);
   baro_sample_.time_us =
       (uint64_t)(rclcpp::Time(msg->header.stamp).nanoseconds() * 1e-3);
-  // ekf_.SetBaroData(sample);
+  baro_updated_ = true;
 }
 
 void Estimator::OnVision(

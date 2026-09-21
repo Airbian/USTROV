@@ -86,7 +86,15 @@ class Estimator final : public rclcpp::Node {
   Eigen::Vector3d accel_bias_published_;
   VisionSample vision_sample_;
   struct EstimatorParams {
-    double baro_atmo_pressure = 101325.0;
-    double baro_sealevel_offset = 0.0;
+    // 水的密度，淡水约 1000 kg/m^3，海水约 1025 kg/m^3。
+    double water_density = 1000.0;
+    // 启动时用于计算水面压力零点的样本数。
+    int64_t surface_calibration_samples = 30;
   } params_;
+
+  // 水压计零点只在启动阶段计算一次。标定完成前不向 EKF 送入深度。
+  double surface_pressure_sum_{0.0};
+  double pressure_at_surface_{0.0};
+  int64_t surface_pressure_sample_count_{0};
+  bool surface_pressure_calibrated_{false};
 };

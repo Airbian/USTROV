@@ -39,12 +39,12 @@ def generate_launch_description() -> LaunchDescription:
         ),
         DeclareLaunchArgument(
             'agent_device',
-            default_value='/dev/ttyPX4',
-            description='Serial device already mapped into the container.',
+            default_value='/dev/fcu_data',
+            description='Stable host device for the PX4 XRCE-DDS serial link.',
         ),
         DeclareLaunchArgument(
             'agent_baudrate',
-            default_value='115200',
+            default_value='921600',
             description='PX4 Micro XRCE-DDS serial baud rate.',
         ),
         DeclareLaunchArgument(

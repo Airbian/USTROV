@@ -1,0 +1,3 @@
+[submodule "ustrov_underlay/src/px4_msgs"]
+	path = ustrov_underlay/src/px4_msgs
+	url = https://github.com/PX4/px4_msgs.git

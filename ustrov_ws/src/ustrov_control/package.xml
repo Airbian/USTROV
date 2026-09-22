@@ -25,7 +25,6 @@
   <depend>ustrov_control_msgs</depend>
   <depend>ustrov_common</depend>
   <!-- 仅三个可选路径跟踪 launch 会使用；不参与本包编译。 -->
-  <exec_depend>path_planning</exec_depend>
   <depend>eigen</depend>
   <depend>nav_msgs</depend>
   <depend>geometry_msgs</depend>

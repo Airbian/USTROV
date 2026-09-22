@@ -21,8 +21,25 @@
 
 ```bash
 ros2 launch ustrov_state_estimation state_estimation.launch.py \
-  vehicle_name:=uuv00 use_sim_time:=true
+  vehicle_name:=uuv00 use_sim_time:=true \
+  water_density:=1000.0 surface_calibration_samples:=30
 ```
+
+## 水压计深度零点
+
+估计器启动后会先平均 `surface_calibration_samples` 帧压力数据，将结果作为
+`pressure_at_surface`。标定完成前不会把压力数据送入 EKF；日志出现
+`Pressure zero calibration complete` 后才开始输出相对水面的深度。
+
+标定时必须让机器人在水面保持静止。深度按照下面的关系计算：
+
+```text
+z = -(pressure - pressure_at_surface) / (water_density * 9.81)
+```
+
+ROS 的 Z 轴向上，因此下潜后的 Z 为负。`water_density` 的单位是 `kg/m^3`：
+淡水可使用约 `1000.0`，海水可使用约 `1025.0`。每次重启估计器都会重新标零；
+如果在水下重启，当前位置会被当作新的零深度。
 
 在完整仿真中启用真实 EKF（替代 `fake_state_estimator`）：
 

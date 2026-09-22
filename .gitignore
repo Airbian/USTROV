@@ -3,6 +3,9 @@ build/
 install/
 log/
 
+# 当前尚未纳入部署的可选视觉依赖
+ustrov_underlay/src/apriltag_ros/
+
 # 编辑器与本地配置
 .vscode/
 .idea/

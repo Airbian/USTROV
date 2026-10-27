@@ -1,0 +1,17 @@
+/**:
+  ros__parameters:
+    i2c_bus: 1
+    i2c_address: 60  # 十六进制 0x3c；以实际 ACK 检查结果为准。
+    rotation: 0
+    contrast: 100
+    refresh_hz: 2.0
+    battery_id: 1  # -1 表示不筛选；多电池时应指定正确 ID。
+    battery_topic: /fmu/out/battery_status
+    vehicle_status_topic: /fmu/out/vehicle_status_v1
+    heartbeat_topic: /fmu/out/sensor_combined
+    thrust_topic: /thrust_setpoint
+    torque_topic: /torque_setpoint
+    ethernet_interface: eth0
+    px4_timeout_sec: 2.0
+    battery_timeout_sec: 5.0
+    command_timeout_sec: 0.5

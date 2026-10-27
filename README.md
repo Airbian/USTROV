@@ -23,9 +23,12 @@ USTROV/
 - `ustrov_core`：PX4 执行器与传感器桥
 - `ustrov_gz_plugins`：Gazebo 水动力及传感器插件
 - `ustrov_remote_control`：手柄与键盘控制
+- `ustrov_status_display`：SSD1306 机载只读状态屏、电池与通信状态
 - `ustrov_sim`：模型、世界和仿真 launch
 - `ustrov_state_estimation`：IMU、压力与视觉融合 EKF
 - `ustrov_state_estimation_msgs`：状态估计自定义消息
+
+原生操作站、有线 DDS 和 OLED 开机服务部署见 [`deployment/README.md`](deployment/README.md)。
 
 ## 构建顺序
 

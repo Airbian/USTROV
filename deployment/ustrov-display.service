@@ -1,0 +1,18 @@
+[Unit]
+Description=USTROV OLED Status Display
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/USTROV
+Environment=HOME=/home/pi
+ExecStart=/bin/bash /home/pi/ustrov-network/run-display.sh
+Restart=on-failure
+RestartSec=5
+KillSignal=SIGINT
+TimeoutStopSec=15
+
+[Install]
+WantedBy=multi-user.target

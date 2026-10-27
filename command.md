@@ -70,13 +70,10 @@ ros2 launch ustrov\_bringup core.launch.py
 
 **#服务，Arm**
 
-ros2 service call \\
-
-&#x20; /px4\_actuator\_bridge/arm \\
-
-&#x20; std\_srvs/srv/SetBool \\
-
-&#x20; "{data: ture}"
+ros2 service call \
+/px4\_actuator\_bridge/arm \
+std\_srvs/srv/SetBool \
+"{data: ture}"
 
 
 
